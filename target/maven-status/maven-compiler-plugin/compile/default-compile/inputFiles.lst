@@ -1,0 +1,16 @@
+C:\Users\Ali\eclipse-workspace\pitext\src\main\java\edu\utdallas\pitext\RequiredConstantReplacement.java
+C:\Users\Ali\eclipse-workspace\pitext\src\main\java\edu\utdallas\pitext\PITExtMutationOperatorStub.java
+C:\Users\Ali\eclipse-workspace\pitext\src\main\java\edu\utdallas\pitext\PITExtMutater.java
+C:\Users\Ali\eclipse-workspace\pitext\src\main\java\edu\utdallas\pitext\MutatingClassVisitor.java
+C:\Users\Ali\eclipse-workspace\pitext\src\main\java\edu\utdallas\pitext\ArithmeticOperatorDeletion.java
+C:\Users\Ali\eclipse-workspace\pitext\src\main\java\edu\utdallas\pitext\PITExtMutationEngineFactory.java
+C:\Users\Ali\eclipse-workspace\pitext\src\main\java\edu\utdallas\pitext\Util.java
+C:\Users\Ali\eclipse-workspace\pitext\src\main\java\edu\utdallas\pitext\PITExtMutationEngine.java
+C:\Users\Ali\eclipse-workspace\pitext\src\main\java\edu\utdallas\pitext\UnaryOperatorInsertion.java
+C:\Users\Ali\eclipse-workspace\pitext\src\main\java\edu\utdallas\pitext\ArithmeticOperatorReplacement.java
+C:\Users\Ali\eclipse-workspace\pitext\src\main\java\edu\utdallas\pitext\PITExtMutationOperatorFactory.java
+C:\Users\Ali\eclipse-workspace\pitext\src\main\java\edu\utdallas\pitext\RelationalOperatorReplacement.java
+C:\Users\Ali\eclipse-workspace\pitext\src\main\java\edu\utdallas\pitext\MethodBodyAnalyzer.java
+C:\Users\Ali\eclipse-workspace\pitext\src\main\java\edu\utdallas\pitext\AbsoluteValueInsertion.java
+C:\Users\Ali\eclipse-workspace\pitext\src\main\java\edu\utdallas\pitext\BitwiseOperator.java
+C:\Users\Ali\eclipse-workspace\pitext\src\main\java\edu\utdallas\pitext\MutationPointCollector.java
