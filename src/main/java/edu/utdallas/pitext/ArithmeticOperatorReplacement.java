@@ -244,7 +244,6 @@ public class ArithmeticOperatorReplacement implements PITExtMutationOperatorStub
 					case DMUL:
 					case DDIV:
 					case DREM:
-						Util.println(opcode + "\t" + AOM.get(opcode));
 						this.mv.visitInsn(AOM.get(opcode));
 						return;
 					}
