@@ -77,33 +77,33 @@ public class ArithmeticOperatorReplacement implements PITExtMutationOperatorStub
 	}
 	
 	private void populateAOM() {
-		AOM.put(IADD, int_AOMap.get((variant >>> PLUS_POS) & PLUS_POS_MASK));
-		AOM.put(ISUB, int_AOMap.get((variant >>> MINUS_POS) & MINUS_POS_MASK));
-		AOM.put(IMUL, int_AOMap.get((variant >>> ASTERISK_POS) & ASTERISK_POS_MASK));
-		AOM.put(IDIV, int_AOMap.get((variant >>> DIVISION_POS) & DIVISION_POS_MASK));
-		AOM.put(IREM, int_AOMap.get((variant >>> MODULO_POS) & MODULO_POS_MASK));
+		AOM.put(IADD, int_AOMap.get((variant & PLUS_POS_MASK) >>> PLUS_POS));
+		AOM.put(ISUB, int_AOMap.get((variant & MINUS_POS_MASK) >>> MINUS_POS));
+		AOM.put(IMUL, int_AOMap.get((variant & ASTERISK_POS_MASK) >>> ASTERISK_POS));
+		AOM.put(IDIV, int_AOMap.get((variant & DIVISION_POS_MASK) >>> DIVISION_POS));
+		AOM.put(IREM, int_AOMap.get((variant & MODULO_POS_MASK) >>> MODULO_POS));
 		
-		AOM.put(LADD, long_AOMap.get((variant >>> PLUS_POS) & PLUS_POS_MASK));
-		AOM.put(LSUB, long_AOMap.get((variant >>> MINUS_POS) & MINUS_POS_MASK));
-		AOM.put(LMUL, long_AOMap.get((variant >>> ASTERISK_POS) & ASTERISK_POS_MASK));
-		AOM.put(LDIV, long_AOMap.get((variant >>> DIVISION_POS) & DIVISION_POS_MASK));
-		AOM.put(LREM, long_AOMap.get((variant >>> MODULO_POS) & MODULO_POS_MASK));
+		AOM.put(LADD, long_AOMap.get((variant & PLUS_POS_MASK) >>> PLUS_POS));
+		AOM.put(LSUB, long_AOMap.get((variant & MINUS_POS_MASK) >>> MINUS_POS));
+		AOM.put(LMUL, long_AOMap.get((variant & ASTERISK_POS_MASK) >>> ASTERISK_POS));
+		AOM.put(LDIV, long_AOMap.get((variant & DIVISION_POS_MASK) >>> DIVISION_POS));
+		AOM.put(LREM, long_AOMap.get((variant & MODULO_POS_MASK) >>> MODULO_POS));
 		
-		AOM.put(FADD, float_AOMap.get((variant >>> PLUS_POS) & PLUS_POS_MASK));
-		AOM.put(FSUB, float_AOMap.get((variant >>> MINUS_POS) & MINUS_POS_MASK));
-		AOM.put(FMUL, float_AOMap.get((variant >>> ASTERISK_POS) & ASTERISK_POS_MASK));
-		AOM.put(FDIV, float_AOMap.get((variant >>> DIVISION_POS) & DIVISION_POS_MASK));
-		AOM.put(FREM, float_AOMap.get((variant >>> MODULO_POS) & MODULO_POS_MASK));
+		AOM.put(FADD, float_AOMap.get((variant & PLUS_POS_MASK) >>> PLUS_POS));
+		AOM.put(FSUB, float_AOMap.get((variant & MINUS_POS_MASK) >>> MINUS_POS));
+		AOM.put(FMUL, float_AOMap.get((variant & ASTERISK_POS_MASK) >>> ASTERISK_POS));
+		AOM.put(FDIV, float_AOMap.get((variant & DIVISION_POS_MASK) >>> DIVISION_POS));
+		AOM.put(FREM, float_AOMap.get((variant & MODULO_POS_MASK) >>> MODULO_POS));
 		
-		AOM.put(DADD, double_AOMap.get((variant >>> PLUS_POS) & PLUS_POS_MASK));
-		AOM.put(DSUB, double_AOMap.get((variant >>> MINUS_POS) & MINUS_POS_MASK));
-		AOM.put(DMUL, double_AOMap.get((variant >>> ASTERISK_POS) & ASTERISK_POS_MASK));
-		AOM.put(DDIV, double_AOMap.get((variant >>> DIVISION_POS) & DIVISION_POS_MASK));
-		AOM.put(DREM, double_AOMap.get((variant >>> MODULO_POS) & MODULO_POS_MASK));
+		AOM.put(DADD, double_AOMap.get((variant & PLUS_POS_MASK) >>> PLUS_POS));
+		AOM.put(DSUB, double_AOMap.get((variant & MINUS_POS_MASK) >>> MINUS_POS));
+		AOM.put(DMUL, double_AOMap.get((variant & ASTERISK_POS_MASK) >>> ASTERISK_POS));
+		AOM.put(DDIV, double_AOMap.get((variant & DIVISION_POS_MASK) >>> DIVISION_POS));
+		AOM.put(DREM, double_AOMap.get((variant & MODULO_POS_MASK) >>> MODULO_POS));
 	}
 
 	@Override
-	public boolean canMutate(int opcode, int previousOpcode, Object... other) {
+	public boolean canMutate(int opcode, Object... other) {
 		switch(opcode) {
 		case IADD:
 		case ISUB:

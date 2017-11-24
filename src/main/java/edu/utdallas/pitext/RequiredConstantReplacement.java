@@ -29,8 +29,8 @@ public class RequiredConstantReplacement implements PITExtMutationOperatorStub, 
 	}
 
 	@Override
-	public boolean canMutate(int opcode, int previousOpcode, Object... other) {
-		return (0x02 /*ICONST_M1*/ <= opcode && opcode <= 0x08 /*ICONST_5*/)
+	public boolean canMutate(int opcode, Object... other) {
+		return (ICONST_M1 <= opcode && opcode <= ICONST_5)
 				|| LCONST_0 == opcode || LCONST_1 == opcode
 				|| FCONST_0 == opcode || FCONST_1 == opcode || FCONST_2 == opcode
 				|| DCONST_0 == opcode || DCONST_1 == opcode
@@ -82,47 +82,15 @@ public class RequiredConstantReplacement implements PITExtMutationOperatorStub, 
 	private void applyMutation_INC_DEC(String type, MethodVisitor mv) {
 		switch(variant) {
 		case INC_1:
-			mv.visitInsn(xCONST_1(type));
-			mv.visitInsn(xADD(type));
+			mv.visitMethodInsn(INVOKESTATIC, "edu/utdallas/pitextutils/PITExtUtils", "__increment__",
+					"(" + type + ")" + type, false);
 			break;
 		case DEC_1:
-			mv.visitInsn(xCONST_1(type));
-			mv.visitInsn(xSUB(type));
+			mv.visitMethodInsn(INVOKESTATIC, "edu/utdallas/pitextutils/PITExtUtils", "__decrement__",
+					"(" + type + ")" + type, false);
 		}
 	}
-	
-	private int xADD(String type) {
-		if(type.equals("I")) {
-			return IADD;
-		}
-		if(type.equals("J")) {
-			return LADD;
-		}
-		if(type.equals("F")) {
-			return FADD;
-		}
-		if(type.equals("D")) {
-			return DADD;
-		}
-		return -1;
-	}
-	
-	private int xSUB(String type) {
-		if(type.equals("I")) {
-			return ISUB;
-		}
-		if(type.equals("J")) {
-			return LSUB;
-		}
-		if(type.equals("F")) {
-			return FSUB;
-		}
-		if(type.equals("D")) {
-			return DSUB;
-		}
-		return -1;
-	}
-	
+		
 	private int xCONST_0(String type) {
 		if(type.equals("I")) {
 			return ICONST_0;
@@ -171,7 +139,7 @@ public class RequiredConstantReplacement implements PITExtMutationOperatorStub, 
 			public void visitInsn(int opcode) {
 				index++;
 				if(shouldMutate()) {
-					if(2 /*ICONST_M1*/ <= opcode && opcode <= 8 /*ICONST_5*/) {
+					if(ICONST_M1 <= opcode && opcode <= ICONST_5) {
 						if(variant == RESET_0 || variant == RESET_1) {
 							applyMutationReset("I", this.mv);
 						} else {
@@ -199,12 +167,12 @@ public class RequiredConstantReplacement implements PITExtMutationOperatorStub, 
 							super.visitInsn(opcode);
 							applyMutation_INC_DEC("D", this.mv);
 						}
-					} else { //leave the rest untouched
-						super.visitInsn(opcode);
+					} else {
+						this.mv.visitInsn(opcode);
 					}
 				} else {
 					this.mv.visitInsn(opcode);
-				}
+				}				
 			}
 			@Override
 			public void visitIntInsn(int opcode, int operand) {
@@ -223,6 +191,7 @@ public class RequiredConstantReplacement implements PITExtMutationOperatorStub, 
 				} else {
 					super.visitIntInsn(opcode, operand);
 				}
+				super.visitIntInsn(opcode, operand);
 			}
 			@Override
 			public void visitInvokeDynamicInsn(String name, String desc, Handle bsm, Object... bsmArgs) {
@@ -272,6 +241,7 @@ public class RequiredConstantReplacement implements PITExtMutationOperatorStub, 
 				} else {
 					super.visitLdcInsn(cst);
 				}
+				super.visitLdcInsn(cst);
 			}
 			@Override
 			public void visitLookupSwitchInsn(Label dflt, int[] keys, Label[] labels) {

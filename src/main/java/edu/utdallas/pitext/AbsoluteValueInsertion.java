@@ -21,10 +21,7 @@ public class AbsoluteValueInsertion implements PITExtMutationOperatorStub, Opcod
 	}
 
 	@Override
-	public boolean canMutate(int opcode, int previousOpcode, Object... other) {
-		if(0x1a /*iload_0*/ <= opcode && opcode <= 0x29 /*dload_3*/) {
-			return true;
-		}
+	public boolean canMutate(int opcode, Object... other) {
 		switch(opcode) {
 		case ILOAD:
 		case LLOAD:
@@ -82,7 +79,7 @@ public class AbsoluteValueInsertion implements PITExtMutationOperatorStub, Opcod
 
 	@Override
 	public MethodVisitor createMutator(MutationIdentifier mId, MethodVisitor mv) {
-		final String enclosingClassName = mId.getClassName().asInternalName();
+//		final String enclosingClassName = mId.getClassName().asInternalName();
 		return new MethodVisitor(ASM6, mv) {
 			private int index = 1;
 			
@@ -111,7 +108,7 @@ public class AbsoluteValueInsertion implements PITExtMutationOperatorStub, Opcod
 						}
 						break;
 					case FOZ:
-						this.mv.visitMethodInsn(INVOKESTATIC, enclosingClassName, "__failOnZero__", "(" + type + ")" + type, false);
+						this.mv.visitMethodInsn(INVOKESTATIC, "edu/utdallas/pitextutils/PITExtUtils", "__failOnZero__", "(" + type + ")" + type, false);
 						break;
 					}
 				}

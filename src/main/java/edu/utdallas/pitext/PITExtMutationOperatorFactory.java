@@ -12,7 +12,7 @@ public final class PITExtMutationOperatorFactory {
 	
 	public static PITExtMutationOperatorStub forName(String variantIdentifier) {
 		int variant = -1;
-		String[] splits = variantIdentifier.split("-");
+		String[] splits = variantIdentifier.split("\\-");
 		if(Character.isDigit(splits[splits.length - 1].charAt(0))) {
 			variant = Integer.parseInt(splits[splits.length - 1]);
 		}

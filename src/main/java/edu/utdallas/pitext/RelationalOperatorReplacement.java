@@ -74,27 +74,27 @@ public class RelationalOperatorReplacement implements PITExtMutationOperatorStub
 	}
 	
 	private void populateROM() {
-		ROM.put(IF_ICMPEQ, int_ROMap.get((variant >>> PRM_EQ_POS) & PRM_EQ_POS_MASK));
-		ROM.put(IF_ICMPLT, int_ROMap.get((variant >>> PRM_LT_POS) & PRM_LT_POS_MASK));
-		ROM.put(IF_ICMPLE, int_ROMap.get((variant >>> PRM_LE_POS) & PRM_LE_POS_MASK));
-		ROM.put(IF_ICMPGT, int_ROMap.get((variant >>> PRM_GT_POS) & PRM_GT_POS_MASK));
-		ROM.put(IF_ICMPGE, int_ROMap.get((variant >>> PRM_GE_POS) & PRM_GE_POS_MASK));
-		ROM.put(IF_ICMPNE, int_ROMap.get((variant >>> PRM_NE_POS) & PRM_NE_POS_MASK));
+		ROM.put(IF_ICMPEQ, int_ROMap.get((variant & PRM_EQ_POS_MASK) >>> PRM_EQ_POS));
+		ROM.put(IF_ICMPLT, int_ROMap.get((variant & PRM_LT_POS_MASK) >>> PRM_LT_POS));
+		ROM.put(IF_ICMPLE, int_ROMap.get((variant & PRM_LE_POS_MASK) >>> PRM_LE_POS));
+		ROM.put(IF_ICMPGT, int_ROMap.get((variant & PRM_GT_POS_MASK) >>> PRM_GT_POS));
+		ROM.put(IF_ICMPGE, int_ROMap.get((variant & PRM_GE_POS_MASK) >>> PRM_GE_POS));
+		ROM.put(IF_ICMPNE, int_ROMap.get((variant & PRM_NE_POS_MASK) >>> PRM_NE_POS));
 		
-		ROM.put(IFEQ, fp_ROMap.get((variant >>> PRM_EQ_POS) & PRM_EQ_POS_MASK));
-		ROM.put(IFLT, fp_ROMap.get((variant >>> PRM_LT_POS) & PRM_LT_POS_MASK));
-		ROM.put(IFLE, fp_ROMap.get((variant >>> PRM_LE_POS) & PRM_LE_POS_MASK));
-		ROM.put(IFGT, fp_ROMap.get((variant >>> PRM_GT_POS) & PRM_GT_POS_MASK));
-		ROM.put(IFGE, fp_ROMap.get((variant >>> PRM_GE_POS) & PRM_GE_POS_MASK));
-		ROM.put(IFNE, fp_ROMap.get((variant >>> PRM_NE_POS) & PRM_NE_POS_MASK));
+		ROM.put(IFEQ, fp_ROMap.get((variant & PRM_EQ_POS_MASK) >>> PRM_EQ_POS));
+		ROM.put(IFLT, fp_ROMap.get((variant & PRM_LT_POS_MASK) >>> PRM_LT_POS));
+		ROM.put(IFLE, fp_ROMap.get((variant & PRM_LE_POS_MASK) >>> PRM_LE_POS));
+		ROM.put(IFGT, fp_ROMap.get((variant & PRM_GT_POS_MASK) >>> PRM_GT_POS));
+		ROM.put(IFGE, fp_ROMap.get((variant & PRM_GE_POS_MASK) >>> PRM_GE_POS));
+		ROM.put(IFNE, fp_ROMap.get((variant & PRM_NE_POS_MASK) >>> PRM_NE_POS));
 		
-		ROM.put(IF_ACMPEQ, rf_ROMap.get((variant >>> REF_EQ_POS) & REF_EQ_POS_MASK));
-		ROM.put(IF_ACMPNE, rf_ROMap.get((variant >>> REF_NE_POS) & REF_NE_POS_MASK));
+		ROM.put(IF_ACMPEQ, rf_ROMap.get((variant & REF_EQ_POS_MASK) >>> REF_EQ_POS));
+		ROM.put(IF_ACMPNE, rf_ROMap.get((variant & REF_NE_POS_MASK) >>> REF_NE_POS));
 		
 	}
 
 	@Override
-	public boolean canMutate(int opcode, int previousOpcode, Object... other) {
+	public boolean canMutate(int opcode, Object... other) {
 		switch(opcode) {
 		case IFEQ:
 		case IFNE:

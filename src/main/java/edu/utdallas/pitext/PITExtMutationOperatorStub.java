@@ -4,7 +4,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.pitest.mutationtest.engine.MutationIdentifier;
 
 public interface PITExtMutationOperatorStub {
-	public boolean canMutate(int opcode, int previousOpcode, Object... other);
+	public boolean canMutate(int opcode, Object... other);
 	
 	public String identifier();
 	

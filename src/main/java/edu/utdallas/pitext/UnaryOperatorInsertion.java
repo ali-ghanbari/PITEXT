@@ -61,31 +61,21 @@ public class UnaryOperatorInsertion implements PITExtMutationOperatorStub, Opcod
 	}
 
 	@Override
-	public boolean canMutate(int opcode, int previousOpcode, Object... other) {
+	public boolean canMutate(int opcode, Object... other) {
 		if(opcode == IINC) {
 			final int increment = (int) other[0];
-			if((removeIncrement() || removeDecrement()) && (increment == 1 || increment == -1)) {
+			if((removeIncrement() && increment == 1) || (removeDecrement() && increment == -1)) {
 				return true;
 			}
 			return false;
 		}
-		if(opcode == IXOR && previousOpcode == ICONST_M1 && removeBitwiseNeg()) {
+		if(opcode == IXOR && removeBitwiseNeg()) {
 			return true;
 		}
 		if(opcode == INEG && removeArithNeg()) {
 			return true;
 		}
-		if((0x1a /*ILOAD_0*/ <= opcode && opcode <= 0x1d /*ILOAD_3*/)
-				&& opcode == ILOAD 
-				&& insertBitwiseNeg()) {
-			return true;
-		}
-		return ((0x1a /*ILOAD_0*/ <= opcode && opcode <= 0x1d /*ILOAD_3*/)
-//				|| (0x1e /*LLOAD_0*/ <= opcode && opcode <= 0x21 /*LLOAD_3*/)
-//				|| (0x22 /*FLOAD_0*/ <= opcode && opcode <= 0x25 /*FLOAD_3*/)
-//				|| (0x26 /*DLOAD_0*/ <= opcode && opcode <= 0x29 /*DLOAD_3*/)
-				|| opcode == ILOAD) //|| opcode == LLOAD || opcode == FLOAD || opcode == DLOAD)
-				&& (insertIncrement() || insertBitwiseNeg() || insertDecrement() || insertArithNeg());
+		return opcode == ILOAD && (insertIncrement() || insertBitwiseNeg() || insertDecrement() || insertArithNeg());
 	}
 
 	@Override
@@ -138,7 +128,7 @@ public class UnaryOperatorInsertion implements PITExtMutationOperatorStub, Opcod
 	public MethodVisitor createMutator(MutationIdentifier mId, MethodVisitor mv) {
 		final boolean IsConstructor = mId.getLocation().getMethodName().name().equals("<init>");
 		return new MethodVisitor(ASM6, mv) {
-			private int previousOpcode = -1;
+			//private int previousOpcode = -1;
 			private int index = 0;
 			
 			private boolean shouldMutate() {
@@ -148,43 +138,42 @@ public class UnaryOperatorInsertion implements PITExtMutationOperatorStub, Opcod
 			@Override
 			public void visitVarInsn(int opcode, int var) {
 				index++;
-				this.mv.visitVarInsn(opcode, var);
 				if(shouldMutate()) {
-					if(opcode == ILOAD || (0x1a /*ILOAD_0*/ <= opcode && opcode <= 0x1d /*ILOAD_3*/)) {
+					if(opcode == ILOAD) {
 						if(insertIncrement()) {
-							this.mv.visitInsn(ICONST_1);
-							this.mv.visitInsn(IADD);
-							this.mv.visitVarInsn(ISTORE, var);
-							this.mv.visitVarInsn(ILOAD, var);
+							super.visitIincInsn(var, 1);
+							super.visitVarInsn(opcode, var);
+						} else if(insertDecrement()) {
+							super.visitIincInsn(var, -1);
+							super.visitVarInsn(opcode, var);
+						} else if(insertArithNeg()) {
+							super.visitVarInsn(opcode, var);
+							super.visitInsn(INEG);
+						} else if(insertBitwiseNeg()) {
+							super.visitVarInsn(opcode, var);
+							this.mv.visitMethodInsn(INVOKESTATIC, "edu/utdallas/pitextutils/PITExtUtils", "__bitwise_negation__", "(I)I", false);
+						} else {
+							super.visitVarInsn(opcode, var);
 						}
-						if(insertDecrement()) {
-							this.mv.visitInsn(ICONST_M1);
-							this.mv.visitInsn(IADD);
-							this.mv.visitVarInsn(ISTORE, var);
-							this.mv.visitVarInsn(ILOAD, var);
-						}
-						if(insertArithNeg()) {
-							this.mv.visitInsn(INEG);
-						}
-						if(insertBitwiseNeg()) {
-							this.mv.visitInsn(ICONST_M1);
-							this.mv.visitInsn(IXOR);
-						}
+					} else {
+						super.visitVarInsn(opcode, var);
 					}
+				} else {
+					super.visitVarInsn(opcode, var);
 				}
-				previousOpcode = opcode;
+//				previousOpcode = opcode;
 			}
 			
 			@Override
 			public void visitFieldInsn(int opcode, String owner, String name, String desc) {
 				index++;
-				previousOpcode = opcode;
+//				previousOpcode = opcode;
 				super.visitFieldInsn(opcode, owner, name, desc);
 			}
 			@Override
 			public void visitIincInsn(int var, int increment) {
 				index++;
-				previousOpcode = IINC;
+//				previousOpcode = IINC;
 				if(shouldMutate()) {
 					if((removeIncrement() && increment == 1) || (removeDecrement() && increment == -1)) {
 						return;
@@ -196,70 +185,69 @@ public class UnaryOperatorInsertion implements PITExtMutationOperatorStub, Opcod
 			public void visitInsn(int opcode) {
 				index++;
 				if(shouldMutate()) {
-					if(opcode == IXOR && this.previousOpcode == ICONST_M1 && removeBitwiseNeg()) {
-						this.previousOpcode = IXOR;
-						this.mv.visitInsn(POP);
+					if(opcode == IXOR && removeBitwiseNeg()) {
+						super.visitMethodInsn(INVOKESTATIC, "edu/utdallas/pitextutils/PITExtUtils", "__neutralize_bitwise_neg__", "(II)I", false);
 						return;
 					}
 				}
-				previousOpcode = opcode;
+//				previousOpcode = opcode;
 				if(shouldMutate() && opcode == INEG && removeArithNeg()) {
 					return;
 				}
-				this.mv.visitInsn(opcode);
+				super.visitInsn(opcode);
 			}
 			@Override
 			public void visitIntInsn(int opcode, int operand) {
 				index++;
-				previousOpcode = opcode;
+//				previousOpcode = opcode;
 				super.visitIntInsn(opcode, operand);
 			}
 			@Override
 			public void visitInvokeDynamicInsn(String name, String desc, Handle bsm, Object... bsmArgs) {
 				index++;
-				previousOpcode = INVOKEDYNAMIC;
+//				previousOpcode = INVOKEDYNAMIC;
 				super.visitInvokeDynamicInsn(name, desc, bsm, bsmArgs);
 			}
 			@Override
 			public void visitJumpInsn(int opcode, Label label) {
 				index++;
-				previousOpcode = opcode;
+//				previousOpcode = opcode;
 				this.mv.visitJumpInsn(opcode, label);
 			}
 			@Override
 			public void visitLdcInsn(Object cst) {
 				index++;
-				previousOpcode = LDC;
+//				previousOpcode = LDC;
 				super.visitLdcInsn(cst);
 			}
 			@Override
 			public void visitLookupSwitchInsn(Label dflt, int[] keys, Label[] labels) {
 				index++;
-				previousOpcode = LOOKUPSWITCH;
+//				previousOpcode = LOOKUPSWITCH;
 				super.visitLookupSwitchInsn(dflt, keys, labels);
 			}
 			@Override
 			public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
 				index++;
-				previousOpcode = opcode;
+//				previousOpcode = opcode;
 				super.visitMethodInsn(opcode, owner, name, desc, itf);
 			}
 			@Override
 			public void visitMultiANewArrayInsn(String desc, int dims) {
 				index++;
-				previousOpcode = MULTIANEWARRAY;
+//				previousOpcode = MULTIANEWARRAY;
 				super.visitMultiANewArrayInsn(desc, dims);
 			}
 			@Override
 			public void visitTableSwitchInsn(int min, int max, Label dflt, Label... labels) {
 				index++;
-				previousOpcode = TABLESWITCH;
+//				previousOpcode = TABLESWITCH;
 				super.visitTableSwitchInsn(min, max, dflt, labels);
 			}
 			@Override
 			public void visitTypeInsn(int opcode, String type) {
 				index++;
-				previousOpcode = opcode;
+//				previousOpcode = opcode;
 				super.visitTypeInsn(opcode, type);
 			}
 		};

@@ -12,7 +12,7 @@ import org.pitest.mutationtest.engine.MutationIdentifier;
 public class BitwiseOperator implements PITExtMutationOperatorStub, Opcodes {
 
 	@Override
-	public boolean canMutate(int opcode, int previousOpcode, Object... other) {
+	public boolean canMutate(int opcode, Object... other) {
 		switch(opcode) {
 		case IAND:
 		case LAND:

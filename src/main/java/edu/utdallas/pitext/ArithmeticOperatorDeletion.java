@@ -20,7 +20,7 @@ public class ArithmeticOperatorDeletion implements PITExtMutationOperatorStub, O
 	}
 
 	@Override
-	public boolean canMutate(int opcode, int previousOpcode, Object... other) {
+	public boolean canMutate(int opcode, Object... other) {
 		switch(opcode) {
 		case IADD:
 		case ISUB:
@@ -74,7 +74,7 @@ public class ArithmeticOperatorDeletion implements PITExtMutationOperatorStub, O
 	
 	@Override
 	public MethodVisitor createMutator(MutationIdentifier mId, MethodVisitor mv) {
-		final String enclosingClassName = mId.getClassName().asInternalName();
+//		final String enclosingClassName = mId.getClassName().asInternalName();
 		return new MethodVisitor(ASM6, mv) {
 			private int index = 0;
 			
@@ -101,6 +101,7 @@ public class ArithmeticOperatorDeletion implements PITExtMutationOperatorStub, O
 			public void visitInsn(int opcode) {
 				index++;
 				if(shouldMutate()) {
+					
 					switch(opcode) {
 					case IADD:
 					case ISUB:
@@ -122,13 +123,13 @@ public class ArithmeticOperatorDeletion implements PITExtMutationOperatorStub, O
 					case LSUB:
 					case LMUL:
 					case LDIV:
-						this.mv.visitMethodInsn(INVOKESTATIC, enclosingClassName, "__pi" + variant + "__", "(JJ)J", false);
+						this.mv.visitMethodInsn(INVOKESTATIC, "edu/utdallas/pitextutils/PITExtUtils", "__pi" + variant + "__", "(JJ)J", false);
 						return;						
 					case DADD:
 					case DSUB:
 					case DMUL:
 					case DDIV:
-						this.mv.visitMethodInsn(INVOKESTATIC, enclosingClassName, "__pi" + variant + "__", "(DD)D", false);
+						this.mv.visitMethodInsn(INVOKESTATIC, "edu/utdallas/pitextutils/PITExtUtils", "__pi" + variant + "__", "(DD)D", false);
 						return;
 					}
 				}
