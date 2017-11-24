@@ -13,7 +13,7 @@
 		<dependency>
 			<groupId>org.pitest</groupId>
 			<artifactId>pitest</artifactId>
-			<version>1.2.4</version>
+			<version>1.2.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.ow2.asm</groupId>

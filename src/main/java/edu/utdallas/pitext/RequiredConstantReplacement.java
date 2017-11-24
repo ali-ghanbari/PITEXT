@@ -30,12 +30,12 @@ public class RequiredConstantReplacement implements PITExtMutationOperatorStub, 
 
 	@Override
 	public boolean canMutate(int opcode, Object... other) {
-		return (ICONST_M1 <= opcode && opcode <= ICONST_5)
-				|| LCONST_0 == opcode || LCONST_1 == opcode
-				|| FCONST_0 == opcode || FCONST_1 == opcode || FCONST_2 == opcode
-				|| DCONST_0 == opcode || DCONST_1 == opcode
-				|| BIPUSH == opcode || SIPUSH == opcode
-				|| (LDC == opcode && numeric(other[0]));
+	    return (ICONST_M1 <= opcode && opcode <= ICONST_5)
+		|| LCONST_0 == opcode || LCONST_1 == opcode
+		|| FCONST_0 == opcode || FCONST_1 == opcode || FCONST_2 == opcode
+		|| DCONST_0 == opcode || DCONST_1 == opcode
+		|| BIPUSH == opcode || SIPUSH == opcode
+		|| (LDC == opcode && numeric(other[0]));
 	}
 
 	@Override
@@ -179,19 +179,22 @@ public class RequiredConstantReplacement implements PITExtMutationOperatorStub, 
 				index++;
 				if(shouldMutate()) {
 					if(opcode == BIPUSH || opcode == SIPUSH) {
-						if(variant == RESET_0 || variant == RESET_1) {
-							applyMutationReset("I", this.mv);
-						} else {
-							super.visitIntInsn(opcode, operand);
-							applyMutation_INC_DEC("I", this.mv);
-						}
+					    if(variant == RESET_0) {
+						super.visitIntInsn(opcode, 0);
+					    } else if(variant == RESET_1) {
+						super.visitIntInsn(opcode, 1);
+					    } else if(variant == INC_1) {
+						super.visitIntInsn(opcode, operand + 1);
+					    } else { //DEC_1
+						super.visitIntInsn(opcode, operand - 1);
+					    }
 					} else {
 						super.visitIntInsn(opcode, operand);
 					}
 				} else {
 					super.visitIntInsn(opcode, operand);
 				}
-				super.visitIntInsn(opcode, operand);
+				//				super.visitIntInsn(opcode, operand);
 			}
 			@Override
 			public void visitInvokeDynamicInsn(String name, String desc, Handle bsm, Object... bsmArgs) {
@@ -207,41 +210,77 @@ public class RequiredConstantReplacement implements PITExtMutationOperatorStub, 
 			public void visitLdcInsn(Object cst) {
 				index++;
 				if(shouldMutate()) {
-					if (cst instanceof Integer) {
-						if(variant == RESET_0 || variant == RESET_1) {
+				    if (cst instanceof Integer) {
+					    /*if(variant == RESET_0 || variant == RESET_1) {
 							applyMutationReset("I", this.mv);
 						} else {
 							super.visitLdcInsn(cst);
 							applyMutation_INC_DEC("I", this.mv);
-						}
-					} else if (cst instanceof Long) {
-						if(variant == RESET_0 || variant == RESET_1) {
+							}*/
+					    if(variant == RESET_0) {
+						super.visitLdcInsn(new Integer(0));
+					    } else if(variant == RESET_1) {
+						super.visitLdcInsn(new Integer(1));
+					    } else if(variant == INC_1) {
+						super.visitLdcInsn(((Integer) cst) + 1);
+					    } else { //DEC_1
+						super.visitLdcInsn(((Integer) cst) - 1);
+					    }
+				    } else if (cst instanceof Long) {
+					    /*					    if(variant == RESET_0 || variant == RESET_1) {
 							applyMutationReset("J", this.mv);
 						} else {
 							super.visitLdcInsn(cst);
 							applyMutation_INC_DEC("J", this.mv);
-						}
-					} else if (cst instanceof Float) {
-						if(variant == RESET_0 || variant == RESET_1) {
+							}*/
+					    if(variant == RESET_0) {
+						super.visitLdcInsn(new Long(0));
+					    } else if(variant == RESET_1) {
+						super.visitLdcInsn(new Long(1));
+					    } else if(variant == INC_1) {
+						super.visitLdcInsn(((Long) cst) + 1);
+					    } else { //DEC_1
+						super.visitLdcInsn(((Long) cst) - 1);
+					    }
+				    } else if (cst instanceof Float) {
+					    /*					    if(variant == RESET_0 || variant == RESET_1) {
 							applyMutationReset("F", this.mv);
 						} else {
 							super.visitLdcInsn(cst);
 							applyMutation_INC_DEC("F", this.mv);
-						}
-					} else if (cst instanceof Double) {
-						if(variant == RESET_0 || variant == RESET_1) {
+							}*/
+					    if(variant == RESET_0) {
+						super.visitLdcInsn(new Float(0.F));
+					    } else if(variant == RESET_1) {
+						super.visitLdcInsn(new Float(1.F));
+					    } else if(variant == INC_1) {
+						super.visitLdcInsn(((Float) cst) + 1.F);
+					    } else { //DEC_1
+						super.visitLdcInsn(((Float) cst) - 1.F);
+					    }
+				    } else if (cst instanceof Double) {
+					    /*				if(variant == RESET_0 || variant == RESET_1) {
 							applyMutationReset("D", this.mv);
 						} else {
 							super.visitLdcInsn(cst);
 							applyMutation_INC_DEC("D", this.mv);
-						}
+							}*/
+					    if(variant == RESET_0) {
+						super.visitLdcInsn(new Double(0.D));
+					    } else if(variant == RESET_1) {
+						super.visitLdcInsn(new Double(1.D));
+					    } else if(variant == INC_1) {
+						super.visitLdcInsn(((Double) cst) + 1.D);
+					    } else { //DEC_1
+						super.visitLdcInsn(((Double) cst) - 1.D);
+					    }
 					} else { //do not touch other constants
 						super.visitLdcInsn(cst);
 					}
 				} else {
-					super.visitLdcInsn(cst);
+				    super.visitLdcInsn(cst);
 				}
-				super.visitLdcInsn(cst);
+								//				super.visitLdcInsn(cst);
 			}
 			@Override
 			public void visitLookupSwitchInsn(Label dflt, int[] keys, Label[] labels) {
