@@ -36,7 +36,7 @@ Please note that using this pattern all of the mutation operators are going to b
 		<mutationEngine> pitext </mutationEngine>
 		<mutators>
       <!-- TODO: IF YOU NEED TO NAME SPECIFIC MUTATION OPERATORS YOU CAN LIST THEM HERE -->
-    </mutator>
+    		</mutator>
 	</configuration>
 	<dependencies>
 		<dependency>
